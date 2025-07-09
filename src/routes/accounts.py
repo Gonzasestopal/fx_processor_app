@@ -10,4 +10,4 @@ router = APIRouter()
 
 @router.post('/{user_id}/fund', response_model=Account)
 def fund_account(user_id: int, request: FundRequest):
-    return handlers.fund_account(user_id, request)
+    return handlers.fund_account(user_id, amount=request.amount, currency=request.currency)
