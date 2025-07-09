@@ -36,3 +36,6 @@ class Memory(object):  # noqa: WPS214
             if all(row.get(key) == v for key, v in filters.items()):  # noqa: WPS111, WPS221
                 row.update(new_values)
         return self.find_one(table, **filters)
+
+
+memory_storage = Memory()
