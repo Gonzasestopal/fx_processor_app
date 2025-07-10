@@ -25,9 +25,14 @@ class Memory(object):  # noqa: WPS214
         return None
 
     def insert(self, table: str, record: dict):
-        next_id_to_insert = len(self.get_table(table)) + 1
-        new_obj = {'id': next_id_to_insert, **record}
-        self.get_table(table).append(new_obj)
+        table_data = self.get_table(table)
+
+        existing_ids = [row.get("id", 0) for row in table_data]
+        next_id = max(existing_ids, default=0) + 1
+
+        new_obj = {"id": next_id, **record}
+        table_data.append(new_obj)
+
         return new_obj
 
     def update(self, table: str, filters: dict, new_values: dict):
