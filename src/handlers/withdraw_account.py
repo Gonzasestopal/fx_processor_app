@@ -1,3 +1,14 @@
 
-def withdraw_account(user_id: int, currency: str, amount: int, storage):
+from fastapi import HTTPException
+
+from src.db import memory_storage
+
+
+def withdraw_account(user_id: int, currency: str, amount: int, storage=memory_storage):
+
+    currency = storage.find_one('currencies', name='MXN')
+
+    if not currency:
+        raise HTTPException(status_code=404, detail='Currency {} not found'.format(currency))
+
     return True
