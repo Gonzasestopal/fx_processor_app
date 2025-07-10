@@ -14,14 +14,19 @@ def test_convert_currency_mxn():
     amount = 100
     storage = Mock()
     account = {'amount': 100}
+    new_account = {'amount': 0}
 
     mxn_currency = {'id': 1, 'name': 'MXN'}
     usd_currency = {'id': 2, 'name': 'USD'}
-    storage.find_one.side_effect = [mxn_currency, usd_currency, account]
+    storage.find_one.side_effect = [mxn_currency, usd_currency, account, new_account]
+    storage.update.side_effect = [
+        {'amount': account['amount'] - amount},
+        {'amount': new_account['amount'] + account['amount'] * 0.053}
+    ]
 
-    result = convert_currency(user_id, currency, new_currency, amount, storage)
+    accounts = convert_currency(user_id, currency, new_currency, amount, storage)
 
-    assert result == (amount * 0.053)
+    assert accounts[1]['amount'] == (amount * 0.053)
 
 
 def test_convert_currency_usd():
@@ -31,14 +36,18 @@ def test_convert_currency_usd():
     amount = 100
     storage = Mock()
     account = {'amount': 100}
+    new_account = {'amount': 0}
 
     mxn_currency = {'id': 1, 'name': 'MXN'}
     usd_currency = {'id': 2, 'name': 'USD'}
-    storage.find_one.side_effect = [usd_currency, mxn_currency, account]
+    storage.find_one.side_effect = [mxn_currency, usd_currency, account, new_account]
+    storage.update.side_effect = [
+        {'amount': account['amount'] - amount},
+        {'amount': new_account['amount'] + account['amount'] * 18.70}
+    ]
+    accounts = convert_currency(user_id, currency, new_currency, amount, storage)
 
-    result = convert_currency(user_id, currency, new_currency, amount, storage)
-
-    assert result == (amount * 18.70)
+    assert accounts[1]['amount'] == (amount * 18.70)
 
 
 def test_currency_not_found():
@@ -114,10 +123,11 @@ def test_old_account_balance():
     amount = 100
     storage = Mock()
     account = {'amount': 100}
+    new_account = {'amount': 0}
 
     mxn_currency = {'id': 1, 'name': 'MXN'}
     usd_currency = {'id': 2, 'name': 'USD'}
-    storage.find_one.side_effect = [mxn_currency, usd_currency, account]
+    storage.find_one.side_effect = [mxn_currency, usd_currency, account, new_account]
     storage.update.return_value = {'amount': account['amount'] - amount}
 
     accounts = convert_currency(user_id, currency, new_currency, amount, storage)
@@ -130,4 +140,22 @@ def test_new_account_not_exist():
 
 
 def test_new_account_balance():
-    assert True
+    user_id = 1
+    currency = 'MXN'
+    new_currency = 'USD'
+    amount = 100
+    storage = Mock()
+    account = {'amount': 100}
+    new_account = {'amount': 99}
+
+    mxn_currency = {'id': 1, 'name': 'MXN'}
+    usd_currency = {'id': 2, 'name': 'USD'}
+    storage.find_one.side_effect = [mxn_currency, usd_currency, account, new_account]
+    storage.update.side_effect = [
+        {'amount': account['amount'] - amount},
+        {'amount': new_account['amount'] + account['amount'] * 0.053}
+    ]
+
+    accounts = convert_currency(user_id, currency, new_currency, amount, storage)
+
+    assert accounts[1]['amount'] == (new_account['amount'] + amount * 0.053)
