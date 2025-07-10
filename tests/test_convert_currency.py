@@ -54,6 +54,17 @@ def test_new_currency_not_found():
     with pytest.raises(HTTPException):
         convert_currency(user_id, currency, new_currency, amount, storage)
 
+def test_currencies_are_equal():
+    user_id = 1
+    currency = 'USD'
+    new_currency = 'USD'
+    amount = 100
+    storage = Mock()
+    storage.find_one.return_value = None
+
+    with pytest.raises(HTTPException):
+        convert_currency(user_id, currency, new_currency, amount, storage)
+
 
 def test_insufficient_balance():
     user_id = 1
