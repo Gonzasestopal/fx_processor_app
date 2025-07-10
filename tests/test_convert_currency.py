@@ -182,3 +182,26 @@ def test_new_account_balance():
     accounts = convert_currency(user_id, currency, new_currency, amount, storage)
 
     assert accounts[1]['amount'] == (new_account['amount'] + amount * 0.053)
+
+
+def test_convert_to_new_currency_with_floating_point():
+    user_id = 1
+    currency = 'USD'
+    new_currency = 'MXN'
+    amount = 5
+    storage = Mock()
+    account = {'amount': 5.3}
+    new_account = {'amount': 0}
+
+    mxn_currency = {'id': 1, 'name': 'MXN'}
+    usd_currency = {'id': 2, 'name': 'USD'}
+    storage.find_one.side_effect = [mxn_currency, usd_currency, account, new_account]
+    storage.update.side_effect = [
+        {'amount': account['amount'] - amount},
+        {'amount': new_account['amount'] + amount * 18.70}
+    ]
+
+    accounts = convert_currency(user_id, currency, new_currency, amount, storage)
+
+    assert accounts[0]['amount'] == 0
+    assert accounts[1]['amount'] == 99.11
