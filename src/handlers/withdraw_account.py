@@ -16,4 +16,7 @@ def withdraw_account(user_id: int, currency: str, amount: int, storage=memory_st
     if not account:
         raise HTTPException(status_code=404, detail='Account not found')
 
+    if account['amount'] < amount:
+        raise HTTPException(status_code=400, detail='Insufficient Balance')
+
     return True
