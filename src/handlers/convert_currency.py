@@ -17,4 +17,9 @@ def convert_currency(user_id, currency, new_currency, amount, storage=memory_sto
     if not new_currency:
         raise HTTPException(404, detail='Currency {} not found'.format(new_currency))
 
+    account = storage.find_one('accounts', user_id=user_id, currency_id=currency['id'])
+
+    if not account:
+        raise HTTPException(404, detail='Account not found')
+
     return True

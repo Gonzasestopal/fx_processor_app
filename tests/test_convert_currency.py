@@ -13,6 +13,11 @@ def test_convert_currency_mxn():
     new_currency = 'USD'
     amount = 100
     storage = Mock()
+    account = Mock()
+
+    mxn_currency = {'id': 1}
+    usd_currency = {'id': 2}
+    storage.find_one.side_effect = [usd_currency, mxn_currency, account]
 
     result = convert_currency(user_id, currency, new_currency, amount, storage)
 
@@ -25,6 +30,10 @@ def test_convert_currency_usd():
     new_currency = 'MXN'
     amount = 100
     storage = Mock()
+    account = Mock()
+    mxn_currency = {'id': 1}
+    usd_currency = {'id': 2}
+    storage.find_one.side_effect = [usd_currency, mxn_currency, account]
 
     result = convert_currency(user_id, currency, new_currency, amount, storage)
 
@@ -54,6 +63,7 @@ def test_new_currency_not_found():
     with pytest.raises(HTTPException):
         convert_currency(user_id, currency, new_currency, amount, storage)
 
+
 def test_currencies_are_equal():
     user_id = 1
     currency = 'USD'
@@ -72,6 +82,11 @@ def test_insufficient_balance():
     new_currency = 'MXN'
     amount = 100
     storage = Mock()
+    account = Mock()
+
+    mxn_currency = {'id': 1}
+    usd_currency = {'id': 2}
+    storage.find_one.side_effect = [usd_currency, mxn_currency, account]
 
     result = convert_currency(user_id, currency, new_currency, amount, storage)
 
@@ -84,7 +99,9 @@ def test_account_not_found():
     new_currency = 'MXN'
     amount = 100
     storage = Mock()
+    mxn_currency = {'id': 1}
+    usd_currency = {'id': 2}
+    storage.find_one.side_effect = [usd_currency, mxn_currency, None]
 
-    result = convert_currency(user_id, currency, new_currency, amount, storage)
-
-    assert result == True
+    with pytest.raises(HTTPException):
+        convert_currency(user_id, currency, new_currency, amount, storage)
