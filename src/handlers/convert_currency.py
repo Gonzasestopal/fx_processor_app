@@ -22,4 +22,7 @@ def convert_currency(user_id, currency, new_currency, amount, storage=memory_sto
     if not account:
         raise HTTPException(404, detail='Account not found')
 
+    if account['amount'] < amount:
+        raise HTTPException(400, detail='Insufficient Balance')
+
     return True
