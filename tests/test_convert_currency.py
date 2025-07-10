@@ -21,7 +21,7 @@ def test_convert_currency_mxn():
 
     result = convert_currency(user_id, currency, new_currency, amount, storage)
 
-    assert result == True
+    assert result == (amount * 0.053)
 
 
 def test_convert_currency_usd():
@@ -38,7 +38,7 @@ def test_convert_currency_usd():
 
     result = convert_currency(user_id, currency, new_currency, amount, storage)
 
-    assert result == True
+    assert result == (amount * 18.70)
 
 
 def test_currency_not_found():
