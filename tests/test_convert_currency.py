@@ -105,3 +105,15 @@ def test_account_not_found():
 
     with pytest.raises(HTTPException):
         convert_currency(user_id, currency, new_currency, amount, storage)
+
+
+def test_old_account_balance():
+    assert True
+
+
+def test_new_account_not_exist():
+    assert True
+
+
+def test_new_account_balance():
+    assert True
