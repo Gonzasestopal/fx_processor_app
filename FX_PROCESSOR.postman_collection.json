@@ -1,0 +1,131 @@
+{
+	"info": {
+		"_postman_id": "11d74f8f-5868-4118-824a-0a28466075bf",
+		"name": "FX_PROCESSOR",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "12209105",
+		"_collection_link": "https://fondeadora-bussiness.postman.co/workspace/F4B~47744569-da5b-4da9-83cf-2ba74021487b/collection/12209105-11d74f8f-5868-4118-824a-0a28466075bf?action=share&source=collection_link&creator=12209105"
+	},
+	"item": [
+		{
+			"name": "fund",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"currency\": \"MXN\",\r\n    \"amount\": 100\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8000/wallets/1/fund",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"wallets",
+						"1",
+						"fund"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "convert mxn to usd",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"currency\": \"MXN\",\r\n    \"new_currency\": \"USD\",\r\n    \"amount\": 100\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8000/wallets/1/convert",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"wallets",
+						"1",
+						"convert"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "convert usd to mxn",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"currency\": \"USD\",\r\n    \"new_currency\": \"MXN\",\r\n    \"amount\": 5\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8000/wallets/1/convert",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"wallets",
+						"1",
+						"convert"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "withdraw",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"currency\": \"MXN\",\r\n    \"amount\": 100\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8000/wallets/1/withdraw",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"wallets",
+						"1",
+						"withdraw"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
