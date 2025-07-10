@@ -1,6 +1,21 @@
+from types import MappingProxyType
+
 from fastapi import HTTPException
 
 from src.db import memory_storage
+
+MXN_CONVERSION_RATES = MappingProxyType({
+    'USD': 0.053
+})
+
+USD_CONVERSION_RATES = MappingProxyType({
+    'MXN': 18.70
+})
+
+CURRENCIES = MappingProxyType({
+    'MXN': MXN_CONVERSION_RATES,
+    'USD': USD_CONVERSION_RATES,
+})
 
 
 def convert_currency(user_id, currency, new_currency, amount, storage=memory_storage):
@@ -25,4 +40,6 @@ def convert_currency(user_id, currency, new_currency, amount, storage=memory_sto
     if account['amount'] < amount:
         raise HTTPException(400, detail='Insufficient Balance')
 
-    return True
+    rate = CURRENCIES[currency['name']][new_currency['name']]
+
+    return amount * rate

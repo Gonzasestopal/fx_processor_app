@@ -15,9 +15,9 @@ def test_convert_currency_mxn():
     storage = Mock()
     account = {'amount': 100}
 
-    mxn_currency = {'id': 1}
-    usd_currency = {'id': 2}
-    storage.find_one.side_effect = [usd_currency, mxn_currency, account]
+    mxn_currency = {'id': 1, 'name': 'MXN'}
+    usd_currency = {'id': 2, 'name': 'USD'}
+    storage.find_one.side_effect = [mxn_currency, usd_currency, account]
 
     result = convert_currency(user_id, currency, new_currency, amount, storage)
 
@@ -32,8 +32,8 @@ def test_convert_currency_usd():
     storage = Mock()
     account = {'amount': 100}
 
-    mxn_currency = {'id': 1}
-    usd_currency = {'id': 2}
+    mxn_currency = {'id': 1, 'name': 'MXN'}
+    usd_currency = {'id': 2, 'name': 'USD'}
     storage.find_one.side_effect = [usd_currency, mxn_currency, account]
 
     result = convert_currency(user_id, currency, new_currency, amount, storage)
