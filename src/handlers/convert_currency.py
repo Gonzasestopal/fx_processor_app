@@ -1,3 +1,4 @@
+from decimal import ROUND_UP, Decimal
 from types import MappingProxyType
 
 from fastapi import HTTPException
@@ -40,9 +41,13 @@ def convert_currency(user_id, currency, new_currency, amount, storage=memory_sto
     if account['amount'] < amount:
         raise HTTPException(400, detail='Insufficient Balance')
 
+    rounded_up_amount = round_up_amount_to_available_decimal(amount, account['amount'])
+
     rate = CURRENCIES[currency['name']][new_currency['name']]
 
-    old_account_balance = account['amount'] - amount
+    old_account_balance = Decimal(str(account['amount'])) - rounded_up_amount
+
+    print(Decimal(str(account['amount'])) - rounded_up_amount)
 
     updated_old_account = storage.update(
         'accounts',
@@ -57,11 +62,18 @@ def convert_currency(user_id, currency, new_currency, amount, storage=memory_sto
             'accounts',
             {'user_id': 1, 'currency_id': new_currency['id'], 'amount': 0}
         )
-        print(new_account)
 
     updated_new_account = storage.update(
         'accounts',
         filters={'user_id': user_id, 'currency_id': new_currency['id']},
-        new_values={'amount': new_account['amount'] + rate * amount}
+        new_values={'amount': Decimal(str(new_account['amount'])) + Decimal(str(rate)) * rounded_up_amount}
     )
     return [updated_old_account, updated_new_account]
+
+
+def round_up_amount_to_available_decimal(user_input: int, stored_amount: float) -> Decimal:
+    stored_decimal = Decimal(str(stored_amount)).quantize(Decimal('0.01'), rounding=ROUND_UP)
+
+    if user_input == int(stored_decimal):
+        return stored_decimal
+    return Decimal(user_input).quantize(Decimal('0.01'))

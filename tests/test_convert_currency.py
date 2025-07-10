@@ -1,10 +1,12 @@
 
+from decimal import Decimal
 from unittest.mock import Mock
 
 import pytest
 from fastapi import HTTPException
 
-from src.handlers.convert_currency import convert_currency
+from src.handlers.convert_currency import (
+    convert_currency, round_up_amount_to_available_decimal)
 
 
 def test_convert_currency_mxn():
@@ -196,12 +198,13 @@ def test_convert_to_new_currency_with_floating_point():
     mxn_currency = {'id': 1, 'name': 'MXN'}
     usd_currency = {'id': 2, 'name': 'USD'}
     storage.find_one.side_effect = [mxn_currency, usd_currency, account, new_account]
+    rounded_up_amount = round_up_amount_to_available_decimal(amount, account['amount'])
     storage.update.side_effect = [
-        {'amount': account['amount'] - amount},
-        {'amount': new_account['amount'] + amount * 18.70}
+        {'amount': Decimal(str(account['amount'])) - rounded_up_amount},
+        {'amount': Decimal(str(new_account['amount'])) + rounded_up_amount * Decimal('18.70')}
     ]
 
     accounts = convert_currency(user_id, currency, new_currency, amount, storage)
 
     assert accounts[0]['amount'] == 0
-    assert accounts[1]['amount'] == 99.11
+    assert accounts[1]['amount'] == Decimal('100')
