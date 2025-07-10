@@ -46,13 +46,13 @@ def test_currency_not_found():
 def test_new_currency_not_found():
     user_id = 1
     currency = 'USD'
-    new_currency = 'MXN'
+    new_currency = 'JPN'
     amount = 100
     storage = Mock()
+    storage.find_one.return_value = None
 
-    result = convert_currency(user_id, currency, new_currency, amount, storage)
-
-    assert result == True
+    with pytest.raises(HTTPException):
+        convert_currency(user_id, currency, new_currency, amount, storage)
 
 
 def test_insufficient_balance():
