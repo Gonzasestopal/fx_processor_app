@@ -83,3 +83,28 @@ def test_new_updated_balance():
         filters={'user_id': user_id, 'currency_id': currency_obj['id']},
         new_values={'amount': account['amount'] - amount}
     )
+
+
+def test_return_value_withdraw():
+    storage = Mock()
+    user_id = 1
+    currency = 'MXN'
+    amount = 100
+    account = {'id': 1, 'user_id': 1, 'currency_id': 1, 'amount': 101}
+    currency_obj = {'id': 1, 'name': 'MXN'}
+    storage.find_one.side_effect = [
+        currency_obj,
+        account,
+    ]
+    user_id = 1
+    currency = 'MXN'
+    amount = 100
+    account = withdraw_account(
+        user_id,
+        currency,
+        amount,
+        storage,
+    )
+
+    assert account == storage.update.return_value
+
