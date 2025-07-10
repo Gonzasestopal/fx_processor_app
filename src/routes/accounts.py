@@ -5,7 +5,7 @@ from fastapi import APIRouter
 
 from src import handlers
 from src.models import Account
-from src.requests import ConvertRequest, FundRequest
+from src.requests import ConvertRequest, FundRequest, WithdrawRequest
 
 router = APIRouter()
 
@@ -22,4 +22,13 @@ def convert_currency(user_id: int, request: ConvertRequest):
         amount=request.amount,
         currency=request.currency,
         new_currency=request.new_currency,
+    )
+
+
+@router.post('/{user_id}/withdraw', response_model=Account)
+def withdraw_account(user_id: int, request: WithdrawRequest):
+    return handlers.withdraw_account(
+        user_id,
+        amount=request.amount,
+        currency=request.currency,
     )
