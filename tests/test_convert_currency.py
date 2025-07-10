@@ -208,3 +208,30 @@ def test_convert_to_new_currency_with_floating_point():
 
     assert accounts[0]['amount'] == 0
     assert accounts[1]['amount'] == Decimal('100')
+
+
+def test_convert_currency_return_value():
+    user_id = 1
+    currency = 'MXN'
+    new_currency = 'USD'
+    amount = 100
+    storage = Mock()
+    account = {'id': 1, 'user_id': 1, 'amount': 100}
+    new_account = {'id': 2, 'user_id': 1, 'amount': 99}
+
+    mxn_currency = {'id': 1, 'name': 'MXN'}
+    usd_currency = {'id': 2, 'name': 'USD'}
+    storage.find_one.side_effect = [mxn_currency, usd_currency, account, new_account]
+    storage.update.side_effect = [
+        {**account, 'amount': account['amount'] - amount},
+        {**new_account, 'amount': new_account['amount'] + account['amount'] * 0.053}
+    ]
+
+    accounts = convert_currency(user_id, currency, new_currency, amount, storage)
+
+    updated_account = {'id': 1, 'user_id': 1, 'amount': account['amount'] - amount}
+    updated_new_Account = {'id': 2, 'user_id': 1, 'amount': new_account['amount'] + account['amount'] * 0.053}
+
+    assert isinstance(accounts, list)
+    assert updated_account in accounts
+    assert updated_new_Account in accounts
