@@ -62,3 +62,39 @@ def test_fund_account():
         filters={'user_id': 1, 'currency_id': 1},
         new_values={'amount': 200}
     )
+
+
+def test_fund_account_return_value():
+    storage = Mock()
+    user_id = 1
+    currency = 'MXN'
+    amount = 100
+
+    storage.find_one.side_effect = [{'id': 1, 'name': 'MXN'}, {'id': 1, 'user_id': 1, 'currency_id': 1, 'amount': 100}]
+
+    account = fund_account(
+        storage=storage,
+        user_id=user_id,
+        amount=amount,
+        currency=currency,
+    )
+
+    assert account == storage.update.return_value
+
+
+def test_fund_new_account_return_value():
+    storage = Mock()
+    user_id = 1
+    currency = 'MXN'
+    amount = 100
+
+    storage.find_one.side_effect = [{'id': 1, 'name': 'MXN'}, None]
+
+    account = fund_account(
+        storage=storage,
+        user_id=user_id,
+        amount=amount,
+        currency=currency,
+    )
+
+    assert account == storage.insert.return_value
