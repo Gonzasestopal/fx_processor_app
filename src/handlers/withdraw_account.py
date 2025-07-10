@@ -19,4 +19,12 @@ def withdraw_account(user_id: int, currency: str, amount: int, storage=memory_st
     if account['amount'] < amount:
         raise HTTPException(status_code=400, detail='Insufficient Balance')
 
-    return True
+    new_amount = account['amount'] - amount
+
+    updated_account = storage.update(
+        'accounts',
+        filters={'user_id': user_id, 'currency_id': currency['id']},
+        new_values={'amount': new_amount},
+    )
+
+    return updated_account

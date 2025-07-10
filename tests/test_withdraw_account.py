@@ -26,6 +26,7 @@ def test_not_sufficient_balance():
     assert exc_info.value.status_code == 400
     assert exc_info.value.detail == "Insufficient Balance"
 
+
 def test_not_existing_account():
     storage = Mock()
     user_id = 1
@@ -59,7 +60,15 @@ def test_not_existing_currency():
 
 def test_new_updated_balance():
     storage = Mock()
-    storage.find_one.return_value = {'id': 1, 'name': 'MXN'}
+    user_id = 1
+    currency = 'MXN'
+    amount = 100
+    account = {'id': 1, 'user_id': 1, 'currency_id': 1, 'amount': 101}
+    currency_obj = {'id': 1, 'name': 'MXN'}
+    storage.find_one.side_effect = [
+        currency_obj,
+        account,
+    ]
     user_id = 1
     currency = 'MXN'
     amount = 100
@@ -69,4 +78,8 @@ def test_new_updated_balance():
         amount,
         storage,
     )
-    assert storage.assert_called_once()
+    storage.update.assert_called_once_with(
+        'accounts',
+        filters={'user_id': user_id, 'currency_id': currency_obj['id']},
+        new_values={'amount': account['amount'] - amount}
+    )
