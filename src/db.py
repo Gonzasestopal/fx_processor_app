@@ -1,5 +1,11 @@
+from typing import Type
+
+from pydantic import BaseModel
+
+
 class Memory(object):  # noqa: WPS214
     _instance = None
+    _models: dict[str, Type[BaseModel]] = {}
 
     def __new__(cls, storage=None):
         if cls._instance is None:
@@ -24,7 +30,22 @@ class Memory(object):  # noqa: WPS214
                 return row
         return None
 
+    @classmethod
+    def register_model(cls, table: str, model: Type[BaseModel]):
+        cls._models[table] = model
+
     def insert(self, table: str, record: dict):
+        model = self._models.get(table)
+
+        if model is not None:
+            # Check unique_together (optional)
+            meta = getattr(model, "Meta", None)
+            unique_fields = getattr(meta, "unique_together", [])
+            if unique_fields:
+                filters = {field: record[field] for field in unique_fields}
+                if self.find_one(table, **filters):
+                    raise ValueError(f"Record with {unique_fields} already exists")
+
         table_data = self.get_table(table)
 
         existing_ids = [row.get("id", 0) for row in table_data]

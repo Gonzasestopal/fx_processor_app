@@ -86,8 +86,8 @@ def test_insert_clash_unique():
 
     memory = Memory(storage={'accounts': [account.model_dump()]})
 
-    with pytest.raises(Exception):
-        memory.insert('accounts', {'user_id': 1, 'currency_id': '1', 'amount': 0})
+    with pytest.raises(ValueError):
+        memory.insert('accounts', {'user_id': 1, 'currency_id': 1, 'amount': 0})
 
 
 def test_insert_new_obj_id_non_consecutive_records():
