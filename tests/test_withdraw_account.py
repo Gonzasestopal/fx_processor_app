@@ -8,6 +8,7 @@ from src.handlers.withdraw_account import withdraw_account
 
 def test_not_sufficient_balance():
     storage = Mock()
+    storage.find_one.return_value = {'id': 1, 'name': 'MXN'}
     user_id = 1
     currency = 'MXN'
     amount = 100
@@ -25,6 +26,8 @@ def test_not_existing_account():
     user_id = 1
     currency = 'MXN'
     amount = 100
+    storage.find_one.side_effect = [{'id': 1, 'name': 'MXN'}, None]
+
     with pytest.raises(HTTPException):
         withdraw_account(
             user_id,
@@ -36,6 +39,7 @@ def test_not_existing_account():
 
 def test_not_existing_currency():
     storage = Mock()
+    storage.find_one.return_value = None
     user_id = 1
     currency = 'MXN'
     amount = 100
@@ -50,6 +54,7 @@ def test_not_existing_currency():
 
 def test_new_updated_balance():
     storage = Mock()
+    storage.find_one.return_value = {'id': 1, 'name': 'MXN'}
     user_id = 1
     currency = 'MXN'
     amount = 100

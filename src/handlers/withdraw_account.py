@@ -11,4 +11,9 @@ def withdraw_account(user_id: int, currency: str, amount: int, storage=memory_st
     if not currency:
         raise HTTPException(status_code=404, detail='Currency {} not found'.format(currency))
 
+    account = storage.find_one(user_id=user_id, currency_id=currency['id'])
+
+    if not account:
+        raise HTTPException(status_code=404, detail='Account not found')
+
     return True
