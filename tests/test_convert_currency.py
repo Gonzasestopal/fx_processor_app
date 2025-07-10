@@ -136,7 +136,30 @@ def test_old_account_balance():
 
 
 def test_new_account_not_exist():
-    assert True
+    user_id = 1
+    currency = 'MXN'
+    new_currency = 'USD'
+    amount = 100
+    storage = Mock()
+    account = {'amount': 100}
+    new_account = None
+
+    mxn_currency = {'id': 1, 'name': 'MXN'}
+    usd_currency = {'id': 2, 'name': 'USD'}
+    storage.find_one.side_effect = [mxn_currency, usd_currency, account, new_account]
+    storage.update.side_effect = [
+        {'amount': account['amount'] - amount},
+        {'amount': 0 + account['amount'] * 0.053}
+    ]
+
+    storage.insert.return_value = {
+        'id': 2, 'user_id': 1, 'amount': 2,
+    }
+
+    accounts = convert_currency(user_id, currency, new_currency, amount, storage)
+
+    assert accounts[0]['amount'] == 0
+    assert accounts[1]['amount'] == (amount * 0.053)
 
 
 def test_new_account_balance():

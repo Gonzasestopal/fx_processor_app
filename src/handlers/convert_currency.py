@@ -52,11 +52,17 @@ def convert_currency(user_id, currency, new_currency, amount, storage=memory_sto
 
     new_account = storage.find_one('accounts', user_id=user_id, currency_id=new_currency['id'])
 
+    if not new_account:
+        new_account = storage.insert(
+            'accounts',
+            {'user_id': 1, 'currency_id': new_currency['id'], amount: 0}
+        )
+        print(new_account)
+
     updated_new_account = storage.update(
         'accounts',
         filters={'user_id': user_id, 'currency_id': new_currency['id']},
         new_values={'amount': new_account['amount'] + rate * amount}
-
     )
 
     print(updated_new_account, new_account['amount'], rate, amount)
