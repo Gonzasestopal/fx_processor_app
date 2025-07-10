@@ -42,4 +42,12 @@ def convert_currency(user_id, currency, new_currency, amount, storage=memory_sto
 
     rate = CURRENCIES[currency['name']][new_currency['name']]
 
-    return amount * rate
+    old_account_balance = account['amount'] - amount
+
+    updated_old_account = storage.update(
+        'accounts',
+        filters={'user_id': user_id, 'currency_id': currency['id']},
+        new_values={'amount': old_account_balance}
+    )
+
+    return [updated_old_account]
