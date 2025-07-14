@@ -25,4 +25,14 @@ def fund_account(user_id: int, currency: str, amount: int, storage=memory_storag
 
     print(updated_account, 'updated')
 
+    storage.insert(
+        'transactions',
+        {
+            'account_id': account['id'],
+            'amount': amount,
+            'currency_id': currency['id'],
+            'type': 'credit',
+        }
+    )
+
     return updated_account

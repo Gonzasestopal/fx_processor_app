@@ -106,7 +106,10 @@ def test_new_transaction():
     currency = 'MXN'
     amount = 100
 
-    storage.find_one.side_effect = [{'id': 1, 'name': 'MXN'}, None]
+    storage.find_one.side_effect = [
+        {'id': 1, 'name': 'MXN'},
+        {'id': 1, 'user_id': 1, 'currency_id': 1, 'amount': 100},
+    ]
 
     fund_account(
         storage=storage,
@@ -117,9 +120,10 @@ def test_new_transaction():
 
     storage.insert.assert_called_once_with(
         'transactions',
-        user_id=1,
-        currency_id=1,
-        account_id=1,
-        amount=100,
-        type='credit',
+        {
+            'currency_id': 1,
+            'account_id': 1,
+            'amount': 100,
+            'type': 'credit',
+        }
     )
