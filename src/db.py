@@ -30,6 +30,9 @@ class Memory(object):  # noqa: WPS214
                 return row
         return None
 
+    def find(self, table: str, **filters):
+        return []
+
     @classmethod
     def register_model(cls, table: str, model: Type[BaseModel]):
         cls._models[table] = model

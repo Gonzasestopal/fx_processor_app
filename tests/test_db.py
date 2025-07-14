@@ -124,6 +124,43 @@ def test_find_one():
     assert record == {'id': 1, 'name': 'MXN'}
 
 
+def test_find_not_found():
+    Memory._instance = None
+
+    memory = Memory()
+
+    records = memory.find('accounts', user_id=1)
+
+    assert records == []
+
+
+def test_find():
+    account = Account(
+        id=1,
+        user_id=1,
+        currency_id=1,
+        amount=100,
+    )
+
+    another_account = Account(
+        id=2,
+        user_id=1,
+        currency_id=2,
+        amount=100,
+    )
+
+    storage = {
+        'accounts': [account.model_dump(), another_account.model_dump()]
+    }
+
+    memory = Memory(storage=storage)
+
+    accounts = memory.find('accounts', user_id=1)
+
+    assert account.model_dump() in accounts
+    assert another_account.model_dump() in accounts
+
+
 def test_find_one_by_key():
     Memory._instance = None
 
