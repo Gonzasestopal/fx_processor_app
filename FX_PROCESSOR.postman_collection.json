@@ -154,6 +154,27 @@
 				}
 			},
 			"response": []
+		},
+		{
+			"name": "transactions",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8000/wallets/1/transactions",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"wallets",
+						"1",
+						"transactions"
+					]
+				}
+			},
+			"response": []
 		}
 	]
 }

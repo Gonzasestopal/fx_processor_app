@@ -4,7 +4,7 @@ from typing import Dict, List
 from fastapi import APIRouter
 
 from src import handlers
-from src.models import Account
+from src.models import Account, Transaction
 from src.requests import ConvertRequest, FundRequest, WithdrawRequest
 
 router = APIRouter()
@@ -37,5 +37,12 @@ def withdraw_account(user_id: int, request: WithdrawRequest):
 @router.get('/{user_id}/balances', response_model=Dict[str, int])
 def view_balances(user_id: int):
     return handlers.view_balances(
+        user_id,
+    )
+
+
+@router.get('/{user_id}/transactions', response_model=List[Transaction])
+def get_transactions(user_id: int):
+    return handlers.get_transactions(
         user_id,
     )
