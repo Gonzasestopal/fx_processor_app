@@ -135,6 +135,8 @@ def test_find_not_found():
 
 
 def test_find():
+    Memory._instance = None
+
     account = Account(
         id=1,
         user_id=1,

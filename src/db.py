@@ -31,7 +31,12 @@ class Memory(object):  # noqa: WPS214
         return None
 
     def find(self, table: str, **filters):
-        return []
+        table_data = self.get_table(table)
+        result = [
+            row for row in table_data
+            if all(row.get(k) == v for k, v in filters.items())  # noqa: WPS111, WPS221
+        ]
+        return result
 
     @classmethod
     def register_model(cls, table: str, model: Type[BaseModel]):
