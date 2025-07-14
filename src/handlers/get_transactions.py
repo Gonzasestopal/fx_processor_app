@@ -4,11 +4,15 @@ from src.db import memory_storage
 
 
 def get_transactions(user_id, storage=memory_storage):
-    account = storage.find_one('accounts', user_id=user_id)
+    accounts = storage.find('accounts', user_id=user_id)
 
-    if not account:
+    if not accounts:
         raise HTTPException(status_code=404, detail='Account not found')
 
-    transactions = storage.find('transactions', account_id=account['id'])
+    response = []
 
-    return transactions
+    for account in accounts:
+        transactions = storage.find('transactions', account_id=account['id'])
+        response.extend(transactions)
+
+    return response

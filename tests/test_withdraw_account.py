@@ -134,7 +134,7 @@ def test_new_transaction():
             'currency_id': 1,
             'account_id': 1,
             'amount': 100,
-            'type': 'credit',
+            'type': 'debit',
         }
     )
 
