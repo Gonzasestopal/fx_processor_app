@@ -27,4 +27,14 @@ def withdraw_account(user_id: int, currency: str, amount: int, storage=memory_st
         new_values={'amount': new_amount},
     )
 
+    storage.insert(
+        'transactions',
+        {
+            'account_id': account['id'],
+            'amount': amount,
+            'currency_id': currency['id'],
+            'type': 'debit',
+        }
+    )
+
     return updated_account

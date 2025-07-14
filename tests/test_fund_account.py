@@ -28,6 +28,7 @@ def test_no_account_found():
     currency = 'MXN'
     amount = 100
 
+    storage.insert.return_value = {'id': 1, 'user_id': 1, 'currency_id': 1, 'amount': 100}
     storage.find_one.side_effect = [{'id': 1, 'name': 'MXN'}, None]
     fund_account(
         storage=storage,
@@ -36,10 +37,9 @@ def test_no_account_found():
         currency=currency,
     )
 
-    storage.insert.assert_called_once_with(
-        'accounts',
-        {'amount': amount, 'user_id': user_id, 'currency_id': 1}
-    )
+    first_call_args, first_call_kwargs = storage.insert.call_args_list[0]
+
+    assert first_call_args == ('accounts', {'amount': amount, 'user_id': user_id, 'currency_id': 1})
 
 
 def test_fund_account():
@@ -70,6 +70,7 @@ def test_fund_account_return_value():
     currency = 'MXN'
     amount = 100
 
+    storage.insert.return_value = {'id': 1, 'user_id': 1, 'currency_id': 1, 'amount': 100}
     storage.find_one.side_effect = [{'id': 1, 'name': 'MXN'}, {'id': 1, 'user_id': 1, 'currency_id': 1, 'amount': 100}]
 
     account = fund_account(
@@ -88,6 +89,7 @@ def test_fund_new_account_return_value():
     currency = 'MXN'
     amount = 100
 
+    storage.insert.return_value = {'id': 1, 'user_id': 1, 'currency_id': 1, 'amount': 100}
     storage.find_one.side_effect = [{'id': 1, 'name': 'MXN'}, None]
 
     account = fund_account(
@@ -134,7 +136,7 @@ def test_new_transaction():
     user_id = 1
     currency = 'MXN'
     amount = 100
-
+    storage.insert.return_value = {'id': 1, 'user_id': 1, 'currency_id': 1, 'amount': 100}
     storage.find_one.side_effect = [
         {'id': 1, 'name': 'MXN'},
         {'id': 1, 'user_id': 1, 'currency_id': 1, 'amount': 100},
@@ -158,13 +160,13 @@ def test_new_transaction():
     )
 
 
-
 def test_new_transaction_new_account():
     storage = Mock()
     user_id = 1
     currency = 'MXN'
     amount = 100
 
+    storage.insert.return_value = {'id': 1, 'user_id': 1, 'currency_id': 1, 'amount': 100}
     storage.find_one.side_effect = [
         {'id': 1, 'name': 'MXN'},
         None,
@@ -177,7 +179,9 @@ def test_new_transaction_new_account():
         currency=currency,
     )
 
-    storage.insert.assert_called_once_with(
+    second_call_args, second_call_kwargs = storage.insert.call_args_list[1]
+
+    assert second_call_args == (
         'transactions',
         {
             'currency_id': 1,

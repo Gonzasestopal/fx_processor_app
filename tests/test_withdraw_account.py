@@ -130,9 +130,11 @@ def test_new_transaction():
 
     storage.insert.assert_called_once_with(
         'transactions',
-        user_id=1,
-        currency_id=1,
-        account_id=1,
-        amount=100,
-        type='debit',
+        {
+            'currency_id': 1,
+            'account_id': 1,
+            'amount': 100,
+            'type': 'credit',
+        }
     )
+

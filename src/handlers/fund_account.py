@@ -11,13 +11,23 @@ def fund_account(user_id: int, currency: str, amount: int, storage=memory_storag
 
     account = storage.find_one('accounts', user_id=user_id, currency_id=currency['id'])
 
-    print(account)
-
     if not account:
-        return storage.insert(
+        account = storage.insert(
             'accounts',
             {'amount': amount, 'user_id': user_id, 'currency_id': currency['id']}
         )
+
+        storage.insert(
+            'transactions',
+            {
+                'account_id': account['id'],
+                'amount': amount,
+                'currency_id': currency['id'],
+                'type': 'credit',
+            }
+        )
+
+        return account
 
     new_amount = account['amount'] + amount
 
