@@ -1,4 +1,5 @@
 from decimal import ROUND_CEILING, ROUND_HALF_UP, Decimal
+from enum import Enum
 
 from pydantic import BaseModel, field_validator
 
@@ -30,6 +31,18 @@ class Account(BaseModel):
             return int(Decimal(str(v)).quantize(Decimal("1"), rounding=ROUND_HALF_UP))
         return v
 
+
+class TransactionType(str, Enum):
+    debit = "debit"
+    credit = "credit"
+
+
+class Transaction(BaseModel):
+    id: int
+    account_id: int
+    currency_id: int
+    amount: int
+    type: TransactionType
 
 
 Memory.register_model("accounts", Account)
