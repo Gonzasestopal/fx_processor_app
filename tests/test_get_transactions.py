@@ -13,6 +13,65 @@ def test_account_not_found():
         get_transactions(user_id)
 
 
+def test_transaction_for_multiple_account():
+    user_id = 1
+
+    transaction = Transaction(
+        id=1,
+        type='debit',
+        account_id=1,
+        currency_id=1,
+        amount=50,
+    )
+
+    another_transaction = Transaction(
+        id=2,
+        type='credit',
+        account_id=1,
+        currency_id=1,
+        amount=100,
+    )
+
+    different_account_transaction = Transaction(
+        id=3,
+        type='debit',
+        account_id=2,
+        currency_id=1,
+        amount=100,
+    )
+
+    account = Account(
+        id=1,
+        user_id=1,
+        amount=50,
+        currency_id=1,
+    )
+
+    another_account = Account(
+        id=2,
+        user_id=1,
+        amount=100,
+        currency_id=1,
+    )
+
+    storage = Mock()
+    storage.find.return_value = [
+        account.model_dump(),
+        another_account.model_dump(),
+    ]
+    storage.find.return_value = [
+        transaction.model_dump(),
+        another_transaction.model_dump(),
+        different_account_transaction.model_dump()
+    ]
+
+    transactions = get_transactions(user_id, storage=storage)
+
+    assert transaction.model_dump() in transactions
+    assert another_transaction.model_dump() in transactions
+    assert different_account_transaction.model_dump() in transactions
+
+
 def test_transactions_return_value():
     user_id = 1
 
@@ -32,14 +91,6 @@ def test_transactions_return_value():
         amount=50,
     )
 
-    different_account_transaction = Transaction(
-        id=3,
-        type='debit',
-        account_id=2,
-        currency_id=1,
-        amount=100,
-    )
-
     account = Account(
         id=1,
         user_id=1,
@@ -52,11 +103,9 @@ def test_transactions_return_value():
     storage.find.return_value = [
         transaction.model_dump(),
         another_transaction.model_dump(),
-        different_account_transaction.model_dump(),
     ]
 
     transactions = get_transactions(user_id, storage=storage)
 
     assert transaction.model_dump() in transactions
     assert another_transaction.model_dump() in transactions
-    assert different_account_transaction.model_dump() in transactions
