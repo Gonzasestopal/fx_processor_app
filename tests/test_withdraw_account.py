@@ -108,3 +108,31 @@ def test_return_value_withdraw():
 
     assert account == storage.update.return_value
 
+
+def test_new_transaction():
+    storage = Mock()
+    user_id = 1
+    currency = 'MXN'
+    amount = 100
+    account = {'id': 1, 'user_id': 1, 'currency_id': 1, 'amount': 101}
+    currency_obj = {'id': 1, 'name': 'MXN'}
+    storage.find_one.side_effect = [
+        currency_obj,
+        account,
+    ]
+
+    withdraw_account(
+        user_id,
+        currency,
+        amount,
+        storage,
+    )
+
+    storage.insert.assert_called_once_with(
+        'transactions',
+        user_id=1,
+        currency_id=1,
+        account_id=1,
+        amount=100,
+        type='debit',
+    )

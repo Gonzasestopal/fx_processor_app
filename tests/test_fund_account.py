@@ -98,3 +98,28 @@ def test_fund_new_account_return_value():
     )
 
     assert account == storage.insert.return_value
+
+
+def test_new_transaction():
+    storage = Mock()
+    user_id = 1
+    currency = 'MXN'
+    amount = 100
+
+    storage.find_one.side_effect = [{'id': 1, 'name': 'MXN'}, None]
+
+    fund_account(
+        storage=storage,
+        user_id=user_id,
+        amount=amount,
+        currency=currency,
+    )
+
+    storage.insert.assert_called_once_with(
+        'transactions',
+        user_id=1,
+        currency_id=1,
+        account_id=1,
+        amount=100,
+        type='credit',
+    )
