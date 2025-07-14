@@ -1,5 +1,5 @@
 
-from typing import List
+from typing import Dict, List
 
 from fastapi import APIRouter
 
@@ -31,4 +31,11 @@ def withdraw_account(user_id: int, request: WithdrawRequest):
         user_id,
         amount=request.amount,
         currency=request.currency,
+    )
+
+
+@router.get('/{user_id}/balances', response_model=Dict[str, int])
+def view_balances(user_id: int):
+    return handlers.view_balances(
+        user_id,
     )

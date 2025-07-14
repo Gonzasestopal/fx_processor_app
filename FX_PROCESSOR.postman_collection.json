@@ -126,6 +126,34 @@
 				}
 			},
 			"response": []
+		},
+		{
+			"name": "balance",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"currency\": \"MXN\",\r\n    \"amount\": 100\r\n}"
+				},
+				"url": {
+					"raw": "http://localhost:8000/wallets/1/balances",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"wallets",
+						"1",
+						"balances"
+					]
+				}
+			},
+			"response": []
 		}
 	]
 }

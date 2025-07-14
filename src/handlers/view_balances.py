@@ -12,7 +12,7 @@ def view_balances(user_id, storage=memory_storage):
     response = {}
 
     for account in accounts:
-        currency = storage.find_one('currencies', currency_id=account['currency_id'])
-        response[currency['name']] =  account['amount']
+        currency = storage.find_one('currencies', id=account['currency_id'])
+        response[currency['name']] = account['amount']
 
     return response
