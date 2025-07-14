@@ -9,4 +9,10 @@ def view_balances(user_id, storage=memory_storage):
     if not accounts:
         raise HTTPException(status_code=404, detail='Account not found')
 
-    return True
+    response = {}
+
+    for account in accounts:
+        currency = storage.find_one('currencies', currency_id=account['currency_id'])
+        response[currency['name']] =  account['amount']
+
+    return response
