@@ -1,18 +1,18 @@
-MXN_CONVERSION_RATES = {
+MXN_CONVERSION_RATES = {  # noqa: WPS407
     'USD': 0.053
 }
 
-USD_CONVERSION_RATES = {
-    'MXN': 18.70
+USD_CONVERSION_RATES = {  # noqa: WPS407
+    'MXN': 18.7
 }
 
-CURRENCIES = {
+CURRENCIES = {  # noqa: WPS407
     'MXN': MXN_CONVERSION_RATES,
     'USD': USD_CONVERSION_RATES,
 }
 
 
-def update_rates(new_rates, currencies=CURRENCIES):
+def update_rates(new_rates, currencies=CURRENCIES):  # noqa: WPS231
     if currencies is None:
         currencies = CURRENCIES
 

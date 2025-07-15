@@ -13,7 +13,7 @@ def test_update_mxn_to_usd_rates():
     update_rates(new_rates, currencies=tmp_currencies)
 
     assert tmp_currencies['MXN']['USD'] == 0.02
-    assert tmp_currencies['USD']['MXN'] == 18.70
+    assert tmp_currencies['USD']['MXN'] == 18.7
 
 
 def test_update_usd_to_mxn_rates():

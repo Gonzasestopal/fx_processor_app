@@ -116,7 +116,6 @@ def test_insert_new_obj_id_non_consecutive_records():
 
 def test_find_one():
     Memory._instance = None
-
     memory = Memory()
 
     record = memory.find_one('currencies', id=1)
@@ -126,7 +125,6 @@ def test_find_one():
 
 def test_find_not_found():
     Memory._instance = None
-
     memory = Memory()
 
     records = memory.find('accounts', user_id=1)
@@ -165,7 +163,6 @@ def test_find():
 
 def test_find_one_by_key():
     Memory._instance = None
-
     memory = Memory()
 
     record = memory.find_one('currencies', name='MXN')
@@ -175,9 +172,8 @@ def test_find_one_by_key():
 
 def test_find_one_not_found():
     Memory._instance = None
-
     memory = Memory()
 
     record = memory.find_one('currencies', name='JPN')
 
-    assert record == None
+    assert record is None

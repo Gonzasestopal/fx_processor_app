@@ -137,4 +137,3 @@ def test_new_transaction():
             'type': 'debit',
         }
     )
-

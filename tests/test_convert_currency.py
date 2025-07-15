@@ -45,11 +45,11 @@ def test_convert_currency_usd():
     storage.find_one.side_effect = [mxn_currency, usd_currency, account, new_account]
     storage.update.side_effect = [
         {'amount': account['amount'] - amount},
-        {'amount': new_account['amount'] + account['amount'] * 18.70}
+        {'amount': new_account['amount'] + account['amount'] * 18.7}
     ]
     accounts = convert_currency(user_id, currency, new_currency, amount, storage)
 
-    assert accounts[1]['amount'] == (amount * 18.70)
+    assert accounts[1]['amount'] == (amount * 18.7)
 
 
 def test_currency_not_found():
@@ -151,7 +151,7 @@ def test_new_account_not_exist():
     storage.find_one.side_effect = [mxn_currency, usd_currency, account, new_account]
     storage.update.side_effect = [
         {'amount': account['amount'] - amount},
-        {'amount': 0 + account['amount'] * 0.053}
+        {'amount': 0 + account['amount'] * 0.053}  # noqa: WPS345
     ]
 
     storage.insert.return_value = {
@@ -199,9 +199,11 @@ def test_convert_to_new_currency_with_floating_point():
     usd_currency = {'id': 2, 'name': 'USD'}
     storage.find_one.side_effect = [mxn_currency, usd_currency, account, new_account]
     rounded_up_amount = round_up_amount_to_available_decimal(amount, account['amount'])
+    new_account_amount = Decimal(str(new_account['amount']))
+    conversion_amount = rounded_up_amount * Decimal('18.70')
     storage.update.side_effect = [
         {'amount': Decimal(str(account['amount'])) - rounded_up_amount},
-        {'amount': Decimal(str(new_account['amount'])) + rounded_up_amount * Decimal('18.70')}
+        {'amount':  new_account_amount + conversion_amount}
     ]
 
     accounts = convert_currency(user_id, currency, new_currency, amount, storage)
@@ -230,7 +232,11 @@ def test_convert_currency_return_value():
     accounts = convert_currency(user_id, currency, new_currency, amount, storage)
 
     updated_account = {'id': 1, 'user_id': 1, 'amount': account['amount'] - amount}
-    updated_new_Account = {'id': 2, 'user_id': 1, 'amount': new_account['amount'] + account['amount'] * 0.053}
+    updated_new_Account = {
+        'id': 2,
+        'user_id': 1,
+        'amount': new_account['amount'] + account['amount'] * 0.053,
+    }
 
     assert isinstance(accounts, list)
     assert updated_account in accounts

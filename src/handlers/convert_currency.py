@@ -35,8 +35,6 @@ def convert_currency(user_id, currency, new_currency, amount, storage=memory_sto
 
     old_account_balance = Decimal(str(account['amount'])) - rounded_up_amount
 
-    print(Decimal(str(account['amount'])) - rounded_up_amount)
-
     updated_old_account = storage.update(
         'accounts',
         filters={'user_id': user_id, 'currency_id': currency['id']},
@@ -51,7 +49,9 @@ def convert_currency(user_id, currency, new_currency, amount, storage=memory_sto
             {'user_id': 1, 'currency_id': new_currency['id'], 'amount': 0}
         )
 
-    new_amount = Decimal(str(new_account['amount'])) + Decimal(str(rate)) * rounded_up_amount
+    account_amount = Decimal(str(new_account['amount']))
+    converted_amount = Decimal(str(rate)) * rounded_up_amount
+    new_amount = account_amount + converted_amount
 
     updated_new_account = storage.update(
         'accounts',

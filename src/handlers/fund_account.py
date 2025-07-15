@@ -31,9 +31,11 @@ def fund_account(user_id: int, currency: str, amount: int, storage=memory_storag
 
     new_amount = account['amount'] + amount
 
-    updated_account = storage.update('accounts', filters={'user_id': user_id, 'currency_id': currency['id']}, new_values={'amount': new_amount})
-
-    print(updated_account, 'updated')
+    updated_account = storage.update(
+        'accounts',
+        filters={'user_id': user_id, 'currency_id': currency['id']},
+        new_values={'amount': new_amount},
+    )
 
     storage.insert(
         'transactions',
