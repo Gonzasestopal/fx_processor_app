@@ -1,8 +1,9 @@
+from datetime import datetime
 from decimal import ROUND_CEILING, ROUND_HALF_UP, Decimal
 from enum import Enum
 from typing import Optional
 
-from pydantic import BaseModel, field_validator, model_validator
+from pydantic import BaseModel, Field, field_validator, model_validator
 
 from src.db import Memory
 
@@ -47,6 +48,8 @@ class Transaction(BaseModel):
     original_currency_id:  Optional[int] = None
     original_amount:  Optional[int] = None
     fx_rate: Optional[float] = None
+    conversion_id: str = None
+    created_at: datetime = Field(default_factory=datetime.utcnow)
 
     @model_validator(mode="after")
     def set_original_fields(self):
@@ -55,6 +58,21 @@ class Transaction(BaseModel):
         if self.original_amount is None:
             self.original_amount = self.amount
         return self
+
+    @field_validator("amount", mode="before")
+    @classmethod
+    def round_float_to_int(cls, v):
+        if isinstance(v, Decimal):
+            return int(Decimal(str(v)).quantize(Decimal("1"), rounding=ROUND_HALF_UP))
+        return v
+
+    @field_validator("original_amount", mode="before")
+    @classmethod
+    def round_original_amount_to_int(cls, v):
+        if isinstance(v, Decimal):
+            return int(Decimal(str(v)).quantize(Decimal("1"), rounding=ROUND_HALF_UP))
+        return v
+
 
 
 Memory.register_model("accounts", Account)
