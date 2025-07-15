@@ -145,4 +145,13 @@ For reconciliations we can compare account balance and their sum of their transa
 
 We will simulate rates fluctuation by using an async task generator provided by fastapi utils.
 
-- Retrieve_fx_rates run every minutes and updates MXN and USD rates
+- Retrieve_fx_rates run every minute and updates MXN and USD rates
+
+
+# Extra
+
+Included mamba as prototype to run tests
+
+```sh
+mamba tests
+```
