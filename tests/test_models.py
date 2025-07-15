@@ -24,10 +24,10 @@ def test_transaction_with_default_values():
         type='debit',
         account_id=1,
         currency_id=1,
+        fx_rate=0.0053
     )
-
-    print(tx)
 
     assert tx.original_amount == 100
     assert tx.original_currency_id == 1
+    assert tx.fx_rate == 0.0053
 

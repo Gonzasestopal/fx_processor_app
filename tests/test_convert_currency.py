@@ -235,3 +235,56 @@ def test_convert_currency_return_value():
     assert isinstance(accounts, list)
     assert updated_account in accounts
     assert updated_new_Account in accounts
+
+
+def test_new_transaction_on_conversion():
+    user_id = 1
+    currency = 'MXN'
+    mxn_currency_id = 1
+    usd_currency_id = 2
+    new_currency = 'USD'
+    amount = 100
+    storage = Mock()
+    account = {'id': 1, 'user_id': 1, 'amount': 100}
+    new_account = {'id': 2, 'user_id': 1, 'amount': 99}
+
+    mxn_currency = {'id': mxn_currency_id, 'name': 'MXN'}
+    usd_currency = {'id': usd_currency_id, 'name': 'USD'}
+
+    old_amount = account['amount'] - amount
+    new_amount = new_account['amount'] + account['amount'] * 0.053
+    storage.find_one.side_effect = [mxn_currency, usd_currency, account, new_account]
+    storage.update.side_effect = [
+        {**account, 'amount': old_amount},
+        {**new_account, 'amount': new_amount}
+    ]
+
+    convert_currency(user_id, currency, new_currency, amount, storage)
+
+    first_call_args, first_call_kwargs = storage.insert.call_args_list[0]
+
+    second_call_args, second_call_kwargs = storage.insert.call_args_list[1]
+
+    assert first_call_args == (
+        'transactions',
+        {
+            'account_id': 1,
+            'currency_id': mxn_currency_id,
+            'amount': amount,
+            'type': 'debit',
+            'fx_rate': 0.053,
+        }
+    )
+
+    assert second_call_args == (
+        'transactions',
+        {
+            'original_currency_id': mxn_currency_id,
+            'original_amount': amount,
+            'account_id': 1,
+            'currency_id': usd_currency_id,
+            'amount': Decimal(str(new_amount)),
+            'type': 'credit',
+            'fx_rate': 0.053,
+        }
+    )
