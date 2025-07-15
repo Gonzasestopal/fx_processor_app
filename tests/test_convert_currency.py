@@ -15,8 +15,8 @@ def test_convert_currency_mxn():
     new_currency = 'USD'
     amount = 100
     storage = Mock()
-    account = {'amount': 100}
-    new_account = {'amount': 0}
+    account = {'id': 1, 'amount': 100}
+    new_account = {'id': 2, 'amount': 0}
 
     mxn_currency = {'id': 1, 'name': 'MXN'}
     usd_currency = {'id': 2, 'name': 'USD'}
@@ -37,8 +37,8 @@ def test_convert_currency_usd():
     new_currency = 'MXN'
     amount = 100
     storage = Mock()
-    account = {'amount': 100}
-    new_account = {'amount': 0}
+    account = {'id': 1, 'amount': 100}
+    new_account = {'id': 2, 'amount': 0}
 
     mxn_currency = {'id': 1, 'name': 'MXN'}
     usd_currency = {'id': 2, 'name': 'USD'}
@@ -124,8 +124,8 @@ def test_old_account_balance():
     new_currency = 'USD'
     amount = 100
     storage = Mock()
-    account = {'amount': 100}
-    new_account = {'amount': 0}
+    account = {'id': 1, 'amount': 100}
+    new_account = {'id': 2, 'amount': 0}
 
     mxn_currency = {'id': 1, 'name': 'MXN'}
     usd_currency = {'id': 2, 'name': 'USD'}
@@ -143,7 +143,7 @@ def test_new_account_not_exist():
     new_currency = 'USD'
     amount = 100
     storage = Mock()
-    account = {'amount': 100}
+    account = {'id': 1, 'amount': 100}
     new_account = None
 
     mxn_currency = {'id': 1, 'name': 'MXN'}
@@ -170,8 +170,8 @@ def test_new_account_balance():
     new_currency = 'USD'
     amount = 100
     storage = Mock()
-    account = {'amount': 100}
-    new_account = {'amount': 99}
+    account = {'id': 1, 'amount': 100}
+    new_account = {'id': 2, 'amount': 99}
 
     mxn_currency = {'id': 1, 'name': 'MXN'}
     usd_currency = {'id': 2, 'name': 'USD'}
@@ -192,8 +192,8 @@ def test_convert_to_new_currency_with_floating_point():
     new_currency = 'MXN'
     amount = 5
     storage = Mock()
-    account = {'amount': 5.3}
-    new_account = {'amount': 0}
+    account = {'id': 1, 'amount': 5.3}
+    new_account = {'id': 2, 'amount': 0}
 
     mxn_currency = {'id': 1, 'name': 'MXN'}
     usd_currency = {'id': 2, 'name': 'USD'}
