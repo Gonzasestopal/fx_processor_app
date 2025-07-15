@@ -10,7 +10,8 @@ This repo contains transactions processing functionality.
 - [Tests](#tests)
 - [Entities](#entities)
 - [Transactions](#transactions)
-- [Reconciliations][#reconciliations]
+- [Reconciliations](#reconciliations)
+- [Rates](#rates)
 
 ## Assumptions
 
@@ -120,3 +121,8 @@ For reconciliations we can compare account balance and their sum of their transa
 ]
 ```
 
+## Rates
+
+We will simulate rates fluctuation by using an async task generator provided by fastapi utils.
+
+- Retrieve_fx_rates run every minutes and updates MXN and USD rates
