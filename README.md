@@ -7,6 +7,8 @@ This repo contains transactions processing functionality.
 ## Table of Contents
 - [Assumptions](#assumptions)
 - [Requirements](#requirements)
+- [Usage](#usage)
+- [Docs](#docs)
 - [Tests](#tests)
 - [Entities](#entities)
 - [Transactions](#transactions)
@@ -17,18 +19,36 @@ This repo contains transactions processing functionality.
 
 - Wallets will be created upon funding.
 - Wallets will be unique by user_id and currency.
+- MXN and USD currencies are only supported.
 
 ## Requirements
 
 Python >= 3.11
+
+## Usage
+
+```sh
+uvicorn src.main:app --reload
+```
+
+## Docs
+
+You can view API endpoints and schemas on http://localhost:8000/docs
 
 ## Tests
 
 Make sure everything is running as expected by running our tests
 
 ```sh
-pytest
+coverage run -m pytest
 ```
+
+Report coverage using
+
+```sh
+coverage report
+```
+
 
 ## Entities
 
