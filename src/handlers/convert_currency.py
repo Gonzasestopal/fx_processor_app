@@ -1,3 +1,4 @@
+import uuid
 from decimal import ROUND_UP, Decimal
 from types import MappingProxyType
 
@@ -71,6 +72,8 @@ def convert_currency(user_id, currency, new_currency, amount, storage=memory_sto
         new_values={'amount': new_amount}
     )
 
+    conversion_id = generate_conversion_id()
+
     storage.insert(
         'transactions',
         {
@@ -79,6 +82,7 @@ def convert_currency(user_id, currency, new_currency, amount, storage=memory_sto
             'amount': amount,
             'type': 'debit',
             'fx_rate': rate,
+            'conversion_id': conversion_id,
         }
     )
 
@@ -92,6 +96,7 @@ def convert_currency(user_id, currency, new_currency, amount, storage=memory_sto
             'currency_id': new_currency['id'],
             'type': 'credit',
             'fx_rate': rate,
+            'conversion_id': conversion_id,
         }
     )
 
@@ -104,3 +109,7 @@ def round_up_amount_to_available_decimal(user_input: int, stored_amount: float) 
     if user_input == int(stored_decimal):
         return stored_decimal
     return Decimal(user_input).quantize(Decimal('0.01'))
+
+
+def generate_conversion_id():
+    return str(uuid.uuid4())
