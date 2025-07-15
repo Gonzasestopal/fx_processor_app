@@ -1,6 +1,6 @@
 
 from decimal import Decimal
-from unittest.mock import Mock
+from unittest.mock import Mock, patch
 
 import pytest
 from fastapi import HTTPException
@@ -238,53 +238,58 @@ def test_convert_currency_return_value():
 
 
 def test_new_transaction_on_conversion():
-    user_id = 1
-    currency = 'MXN'
-    mxn_currency_id = 1
-    usd_currency_id = 2
-    new_currency = 'USD'
-    amount = 100
-    storage = Mock()
-    account = {'id': 1, 'user_id': 1, 'amount': 100}
-    new_account = {'id': 2, 'user_id': 1, 'amount': 99}
+    with patch('src.handlers.convert_currency.uuid') as mock_uuid:
+        mock_uuid.uuid4.return_value = 'uuid'
 
-    mxn_currency = {'id': mxn_currency_id, 'name': 'MXN'}
-    usd_currency = {'id': usd_currency_id, 'name': 'USD'}
+        user_id = 1
+        currency = 'MXN'
+        mxn_currency_id = 1
+        usd_currency_id = 2
+        new_currency = 'USD'
+        amount = 100
+        storage = Mock()
+        account = {'id': 1, 'user_id': 1, 'amount': 100}
+        new_account = {'id': 2, 'user_id': 1, 'amount': 99}
 
-    old_amount = account['amount'] - amount
-    new_amount = new_account['amount'] + account['amount'] * 0.053
-    storage.find_one.side_effect = [mxn_currency, usd_currency, account, new_account]
-    storage.update.side_effect = [
-        {**account, 'amount': old_amount},
-        {**new_account, 'amount': new_amount}
-    ]
+        mxn_currency = {'id': mxn_currency_id, 'name': 'MXN'}
+        usd_currency = {'id': usd_currency_id, 'name': 'USD'}
 
-    convert_currency(user_id, currency, new_currency, amount, storage)
+        old_amount = account['amount'] - amount
+        new_amount = new_account['amount'] + account['amount'] * 0.053
+        storage.find_one.side_effect = [mxn_currency, usd_currency, account, new_account]
+        storage.update.side_effect = [
+            {**account, 'amount': old_amount},
+            {**new_account, 'amount': new_amount}
+        ]
 
-    first_call_args, first_call_kwargs = storage.insert.call_args_list[0]
+        convert_currency(user_id, currency, new_currency, amount, storage)
 
-    second_call_args, second_call_kwargs = storage.insert.call_args_list[1]
+        first_call_args, first_call_kwargs = storage.insert.call_args_list[0]
 
-    assert first_call_args == (
-        'transactions',
-        {
-            'account_id': 1,
-            'currency_id': mxn_currency_id,
-            'amount': amount,
-            'type': 'debit',
-            'fx_rate': 0.053,
-        }
-    )
+        second_call_args, second_call_kwargs = storage.insert.call_args_list[1]
 
-    assert second_call_args == (
-        'transactions',
-        {
-            'original_currency_id': mxn_currency_id,
-            'original_amount': amount,
-            'account_id': 1,
-            'currency_id': usd_currency_id,
-            'amount': Decimal(str(new_amount)),
-            'type': 'credit',
-            'fx_rate': 0.053,
-        }
-    )
+        assert first_call_args == (
+            'transactions',
+            {
+                'account_id': 1,
+                'currency_id': mxn_currency_id,
+                'amount': amount,
+                'type': 'debit',
+                'fx_rate': 0.053,
+                'conversion_id': 'uuid',
+            }
+        )
+
+        assert second_call_args == (
+            'transactions',
+            {
+                'original_currency_id': mxn_currency_id,
+                'original_amount': amount,
+                'account_id': 1,
+                'currency_id': usd_currency_id,
+                'amount': Decimal(str(new_amount)),
+                'type': 'credit',
+                'fx_rate': 0.053,
+                'conversion_id': 'uuid',
+            }
+        )
