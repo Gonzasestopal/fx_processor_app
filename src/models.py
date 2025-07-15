@@ -28,10 +28,14 @@ class Account(BaseModel):
 
     @field_validator("amount", mode="before")
     @classmethod
-    def round_float_to_int(cls, v):
-        if isinstance(v, Decimal):
-            return int(Decimal(str(v)).quantize(Decimal("1"), rounding=ROUND_HALF_UP))
-        return v
+    def round_amount_to_int(cls, v):
+        return Account.round_amount(v)
+
+    @staticmethod
+    def round_amount(value):
+        if isinstance(value, Decimal):
+            return int(value.quantize(Decimal("1"), rounding=ROUND_HALF_UP))
+        return value
 
 
 class TransactionType(str, Enum):
@@ -59,20 +63,21 @@ class Transaction(BaseModel):
             self.original_amount = self.amount
         return self
 
+    @staticmethod
+    def round_amount(value):
+        if isinstance(value, Decimal):
+            return int(value.quantize(Decimal("1"), rounding=ROUND_HALF_UP))
+        return value
+
     @field_validator("amount", mode="before")
     @classmethod
-    def round_float_to_int(cls, v):
-        if isinstance(v, Decimal):
-            return int(Decimal(str(v)).quantize(Decimal("1"), rounding=ROUND_HALF_UP))
-        return v
+    def round_amount_to_int(cls, v):
+        return cls.round_amount(v)
 
     @field_validator("original_amount", mode="before")
     @classmethod
     def round_original_amount_to_int(cls, v):
-        if isinstance(v, Decimal):
-            return int(Decimal(str(v)).quantize(Decimal("1"), rounding=ROUND_HALF_UP))
-        return v
-
+        return cls.round_amount(v)
 
 
 Memory.register_model("accounts", Account)

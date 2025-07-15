@@ -1,6 +1,7 @@
 from fastapi import HTTPException
 
 from src.db import memory_storage
+from src.models import Account
 
 
 def view_balances(user_id, storage=memory_storage):
@@ -13,6 +14,6 @@ def view_balances(user_id, storage=memory_storage):
 
     for account in accounts:
         currency = storage.find_one('currencies', id=account['currency_id'])
-        response[currency['name']] = account['amount']
+        response[currency['name']] = Account.round_amount(account['amount'])
 
     return response
