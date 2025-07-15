@@ -10,6 +10,7 @@ This repo contains transactions processing functionality.
 - [Tests](#tests)
 - [Entities](#entities)
 - [Transactions](#transactions)
+- [Reconciliations][#reconciliations]
 
 ## Assumptions
 
@@ -42,3 +43,80 @@ For transactions we will be duplicating `currency_id` because this will help us 
 Also we will be adding `fx_rate`, and `original_amount` and `original_currency_id` to for audit and exporting purposes.
 
 ![Transactions](transactions.png)
+
+## Reconciliations
+
+For reconciliations we can compare account balance and their sum of their transactions by comparing `created_at` + `conversion_id` for grouping similar conversion transactions and check balance == debit + credit + conversion tx
+
+```
+{
+    "MXN": 50,
+    "USD": 5
+}
+```
+
+```
+[
+    {
+        "id": 1,
+        "account_id": 1,
+        "currency_id": 1,
+        "amount": 100,
+        "type": "credit",
+        "original_currency_id": 1,
+        "original_amount": 100,
+        "fx_rate": null,
+        "conversion_id": null,
+        "created_at": "2025-07-15T01:25:30.814660"
+    },
+    {
+        "id": 2,
+        "account_id": 1,
+        "currency_id": 1,
+        "amount": 100,
+        "type": "debit",
+        "original_currency_id": 1,
+        "original_amount": 100,
+        "fx_rate": 0.053,
+        "conversion_id": "0fc9b75d-f1c9-488d-9076-4b9912e746ef",
+        "created_at": "2025-07-15T01:25:30.814660"
+    },
+    {
+        "id": 3,
+        "account_id": 1,
+        "currency_id": 2,
+        "amount": 5,
+        "type": "credit",
+        "original_currency_id": 1,
+        "original_amount": 100,
+        "fx_rate": 0.053,
+        "conversion_id": "0fc9b75d-f1c9-488d-9076-4b9912e746ef",
+        "created_at": "2025-07-15T01:25:30.814660"
+    },
+    {
+        "id": 4,
+        "account_id": 1,
+        "currency_id": 1,
+        "amount": 100,
+        "type": "credit",
+        "original_currency_id": 1,
+        "original_amount": 100,
+        "fx_rate": null,
+        "conversion_id": null,
+        "created_at": "2025-07-15T01:25:30.814660"
+    },
+    {
+        "id": 5,
+        "account_id": 1,
+        "currency_id": 1,
+        "amount": 50,
+        "type": "debit",
+        "original_currency_id": 1,
+        "original_amount": 50,
+        "fx_rate": null,
+        "conversion_id": null,
+        "created_at": "2025-07-15T01:25:30.814660"
+    }
+]
+```
+
