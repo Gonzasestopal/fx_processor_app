@@ -8,6 +8,7 @@ This repo contains transactions processing functionality.
 - [Assumptions](#assumptions)
 - [Requirements](#requirements)
 - [Usage](#usage)
+- [Linter](#linter)
 - [Docs](#docs)
 - [Tests](#tests)
 - [Entities](#entities)
@@ -29,6 +30,12 @@ Python >= 3.11
 
 ```sh
 uvicorn src.main:app --reload
+```
+
+## Linter
+
+```sh
+flake8 src tests
 ```
 
 ## Docs

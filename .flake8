@@ -1,0 +1,36 @@
+[flake8]
+max-line-length = 120
+ignore =
+    WPS110
+    WPS111
+    WPS117
+    WPS202
+    WPS210
+    WPS238
+    WPS226
+    WPS204
+    WPS305
+    WPS338
+    WPS459
+    WPS118
+    WPS412
+    WPS432
+    WPS440
+    WPS441
+    WPS601
+    WPS602
+    D100
+    D101
+    D102
+    D103
+    D104
+    D105
+    D106
+    D107
+    DAR101
+    DAR201
+    E241
+    F401
+per-file-ignores =
+    tests/**:F401
+format = wemake
