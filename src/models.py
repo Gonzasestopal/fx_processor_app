@@ -1,7 +1,8 @@
 from decimal import ROUND_CEILING, ROUND_HALF_UP, Decimal
 from enum import Enum
+from typing import Optional
 
-from pydantic import BaseModel, field_validator
+from pydantic import BaseModel, field_validator, model_validator
 
 from src.db import Memory
 
@@ -43,6 +44,17 @@ class Transaction(BaseModel):
     currency_id: int
     amount: int
     type: TransactionType
+    original_currency_id:  Optional[int] = None
+    original_amount:  Optional[int] = None
+    fx_rate: Optional[float] = None
+
+    @model_validator(mode="after")
+    def set_original_fields(self):
+        if self.original_currency_id is None:
+            self.original_currency_id = self.currency_id
+        if self.original_amount is None:
+            self.original_amount = self.amount
+        return self
 
 
 Memory.register_model("accounts", Account)
